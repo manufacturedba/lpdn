@@ -15,5 +15,6 @@ export ARM_TENANT_ID="<your-tenant-id>"
 ## 2. Deploy container to resource group
 
 ```bash
+terraform init
 terraform apply
 ```
