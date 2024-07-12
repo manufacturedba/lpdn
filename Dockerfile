@@ -17,4 +17,4 @@ WORKDIR /app
 
 COPY . .
 
-ENTRYPOINT RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME ./entrypoint.sh
+ENTRYPOINT ./entrypoint.sh
