@@ -12,8 +12,9 @@ WORKDIR $GOPATH/src/github.com/hashicorp/terraform
 RUN git clone https://github.com/hashicorp/terraform.git ./ && \
     git checkout v${TERRAFORM_VERSION} && \
     /bin/bash scripts/build.sh
-    
+
+WORKDIR /app
+
 COPY . .
 
-WORKDIR $GOPATH
-ENTRYPOINT TF_VAR_resource_group_name=$RESOURCE_GROUP_NAME terraform apply -input=false -compact-warnings -auto-approve
+ENTRYPOINT RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME ./entrypoint.sh
