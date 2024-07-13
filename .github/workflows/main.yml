@@ -1,0 +1,42 @@
+on: [push]
+name: Deploy_Terraform_Instance
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+          
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+        - name: 'Build and push image'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+        - run: |
+            RESOURCE_GROUP=${{secrets.RESOURCE_GROUP}} docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/lpdn:${{ github.sha }}
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/lpdn:${{ github.sha }}
+
+        - name: 'Deploy to Azure Container Instances'
+          uses: 'azure/aci-deploy@v1'
+          with:
+            resource-group: ${{ secrets.RESOURCE_GROUP }}
+            dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
+            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/lpdn:${{ github.sha }}
+            registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            registry-username: ${{ secrets.REGISTRY_USERNAME }}
+            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+            secure-environment-variables: > 
+                                          AZ_CLIENT_ID=${{ secrets.AZ_CLIENT_ID }}
+                                          AZ_CLIENT_SECRET=${{ secrets.AZ_CLIENT_SECRET }}
+                                          AZ_TENANT_ID=${{ secrets.AZ_TENANT_ID }}
+                                          RESOURCE_GROUP_NAME=${{ secrets.RESOURCE_GROUP }}
+            name: lpdn
+            location: 'west us 2'
