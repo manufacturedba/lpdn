@@ -36,7 +36,7 @@ jobs:
             secure-environment-variables: > 
                                           AZ_CLIENT_ID=${{ secrets.AZ_CLIENT_ID }}
                                           AZ_CLIENT_SECRET=${{ secrets.AZ_CLIENT_SECRET }}
-                                          AZ_TENANT_ID=${{ secrets.AZ_CLIENT_SECRET }}
+                                          AZ_TENANT_ID=${{ secrets.AZ_TENANT_ID }}
                                           RESOURCE_GROUP_NAME=${{ secrets.RESOURCE_GROUP }}
             name: lpdn
             location: 'west us 2'
