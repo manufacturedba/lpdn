@@ -1,7 +1,3 @@
-resource "random_pet" "rg_name" {
-  prefix = var.resource_group_name
-}
-
 resource "random_string" "container_name" {
   length  = 25
   lower   = true
