@@ -15,6 +15,8 @@ variable "container_group_name_prefix" {
   default     = "acigroup"
 }
 
+
+
 variable "container_name_prefix" {
   type        = string
   description = "Prefix of the container name that's combined with a random value so name is unique in your Azure subscription."
@@ -52,5 +54,24 @@ variable "restart_policy" {
   validation {
     condition     = contains(["Always", "Never", "OnFailure"], var.restart_policy)
     error_message = "The restart_policy must be one of the following: Always, Never, OnFailure."
+  }
+}
+
+variable "env" {
+  type = string
+  description = "The environment to deploy to"
+  default = "development"
+}
+
+locals {
+  env_vars = {
+    development = {
+      db_host = "localhost"
+      db_port = "5432"
+    },
+    production = {
+      db_host = "vault"
+      db_port = "5432"
+    }
   }
 }

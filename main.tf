@@ -10,7 +10,7 @@ resource "random_string" "container_name" {
 }
 
 resource "azurerm_container_group" "container" {
-  count               = 1
+  count               = var.env == "production" ? 1:0
   name                = "${var.container_group_name_prefix}-${random_string.container_name.result}"
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
@@ -37,7 +37,7 @@ resource "docker_image" "nginx" {
 }
 
 resource "docker_container" "nginx" {
-  count = 0
+  count = var.env == "development" ? 1:0
   image = docker_image.nginx.image_id
   name  = "tutorial"
 
